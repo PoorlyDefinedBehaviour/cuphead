@@ -4,4 +4,4 @@
 
 ### - For learning purposes only
 
-![Preview](https://i.imgur.com/LVEbGup.mp4)
+![Preview](https://github.com/PoorlyDefinedBehaviour/cuphead-floral-fury-boss-fight/blob/master/preview/preview.gif)
