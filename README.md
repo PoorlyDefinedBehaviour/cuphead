@@ -4,4 +4,6 @@
 
 ### - For learning purposes only
 
-![Preview](https://giant.gfycat.com/FriendlyWildHorseshoebat.webm)
+<video width="1280" height="720" controls>
+  <source src="https://giant.gfycat.com/FriendlyWildHorseshoebat.webm">
+</video>
