@@ -9,7 +9,7 @@ Entity::Entity(const float& x, const float& y)
     position.y = y;
 }
 
-void Entity::draw()
+auto Entity::draw() -> void
 {
     Animation* anim = &animations[currentAnimation];
 
@@ -34,7 +34,7 @@ void Entity::draw()
     }
 }
 
-void Entity::play(const std::string &animationName, const bool& force)
+void Entity::play(const std::string &animationName, const bool force)
 {
     Animation* animation = &animations[currentAnimation];
 
@@ -46,12 +46,12 @@ void Entity::play(const std::string &animationName, const bool& force)
     }
 }
 
-void Entity::update()
+auto Entity::update() -> void
 {
     position = position.add(velocity);
 }
 
-void Entity::flipAnimation(const bool &shouldFlip)
+auto Entity::flipAnimation(const bool shouldFlip) -> void
 {
     if(shouldFlip){
         flip = SDL_FLIP_HORIZONTAL;
@@ -61,12 +61,12 @@ void Entity::flipAnimation(const bool &shouldFlip)
     }
 }
 
-bool Entity::isAnimationFlipped() const
+auto Entity::isAnimationFlipped() const -> bool
 {
     return flip != SDL_FLIP_NONE;
 }
 
-void Entity::move(const std::string& direction)
+auto Entity::move(const std::string& direction) -> void
 {
     if(direction == "right")
     {
@@ -89,17 +89,17 @@ void Entity::move(const std::string& direction)
     }
 }
 
-bool Entity::isOnGround()
+auto Entity::isOnGround() -> bool
 {
     return static_cast<int>(position.y + getDimensions().y) >= GameConstants::FLOOR_HEIGHT;
 }
 
-Vector2D Entity::getDimensions()
+auto Entity::getDimensions() -> Vector2D
 {
     return this->animations[currentAnimation].getDimensions();
 }
 
-void Entity::receiveDamage(const int &amount)
+auto Entity::receiveDamage(const int amount) -> void
 {
     if (this->health > 0) {
         SDLController::playAudio(GameConstants::sounds::PLAYER_HIT, 0, 100);
@@ -108,21 +108,22 @@ void Entity::receiveDamage(const int &amount)
     }
 }
 
-bool Entity::isDead()
+auto Entity::isDead() -> bool
 {
     return this->health <= 0;
 }
 
-void Entity::setHealth(const int& amount)
+auto Entity::setHealth(const int amount) -> void
 {
     this->health = amount;
 }
 
-int Entity::getHealth()
+auto Entity::getHealth() -> int
 {
     return this->health;
 }
 
-Animation& Entity::getCurrentAnimation(){
+auto Entity::getCurrentAnimation() -> Animation&
+{
     return this->animations[this->currentAnimation];
 }

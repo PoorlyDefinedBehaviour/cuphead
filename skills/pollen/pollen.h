@@ -5,6 +5,6 @@ class Pollen : public Skill
 {
 public:
     Pollen(Entity* entity);
-    void update();
+    auto update() -> void;
 };
 

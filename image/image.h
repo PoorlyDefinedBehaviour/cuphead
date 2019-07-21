@@ -7,7 +7,9 @@ class Image
 {
 public:
     Image(const char* image);
-    SDL_Texture* get();
+
+    auto get() -> SDL_Texture*;
+
     int width;
     int height;
 private:

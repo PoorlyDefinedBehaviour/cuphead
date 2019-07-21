@@ -2,24 +2,25 @@
 #include "game.h"
 
 EventEmitter::EventEmitter(){
+
     Game::subscribeEventEmitter(this);
 }
 
-void EventEmitter::emit(const std::string &eventName)
+auto EventEmitter::emit(const std::string &eventName) -> void
 {
     emittedEvents.push_back(eventName);
 }
 
-void EventEmitter::addEventListener(const std::string &event, void (*func)(), const bool &permanent)
+auto EventEmitter::addEventListener(const std::string &event, void (*func)(), const bool permanent) -> void
 {
     eventReactions.push_back({event, permanent, func});
     pollEvents();
 }
 
-void EventEmitter::pollEvents()
+auto EventEmitter::pollEvents() -> void
 {
-    for(int i=0; i<eventReactions.size(); ++i){
-        for(int j=0; j<emittedEvents.size(); ++j){
+    for(size_t i=0; i<eventReactions.size(); ++i){
+        for(size_t j=0; j<emittedEvents.size(); ++j){
             if(eventReactions[i].eventToActOn == emittedEvents[j]){
                 eventReactions[i].func();
                 if(!eventReactions[i].isPermanent)

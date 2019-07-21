@@ -8,7 +8,7 @@ Image::Image(const char* image)
     SDL_QueryTexture(this->texture, nullptr, nullptr, &width, &height);
 }
 
-SDL_Texture* Image::get()
+auto Image::get() -> SDL_Texture*
 {
     return this->texture;
 }

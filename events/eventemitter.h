@@ -12,9 +12,11 @@ class EventEmitter
 {
 public:
     EventEmitter();
-    void emit(const std::string& eventName);
-    void addEventListener(const std::string& event, void(*func)(), const bool& permanent = false);
-    void pollEvents();
+
+    auto emit(const std::string& eventName) -> void;
+    auto addEventListener(const std::string& event, void(*func)(), const bool permanent = false) -> void;
+
+    auto pollEvents() -> void;
 
 private:
     std::vector<std::string> emittedEvents;

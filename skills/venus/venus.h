@@ -6,7 +6,7 @@ class Venus : public Skill
 {
 public:
     Venus(Entity* entity);
-    void update();
+    auto update() -> void;
 
 private:
     Entity* target;

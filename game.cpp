@@ -21,9 +21,9 @@ std::vector<EventEmitter*> Game::EventEmitterInstances;
 SDL_Event Game::event;
 std::vector<Skill*> Game::skillList;
 
-void Game::init()
+auto Game::init() -> void
 {
-    SDLController::init(true);
+    SDLController::init(false);
     SDLController::playAudio(GameConstants::sounds::MAIN_THEME, -1);
     SDLController::setVolume(GameConstants::sounds::MAIN_THEME, 30);
 
@@ -99,7 +99,7 @@ void Game::init()
                            }, true);
 }
 
-void Game::run()
+auto Game::run() -> void
 {
     const int FPS = 60;
     const int frameDelay = 1000 / FPS;
@@ -139,7 +139,7 @@ void Game::run()
     }
 }
 
-void Game::update()
+auto Game::update() -> void
 {
     this->pollEvents();
 
@@ -190,7 +190,7 @@ void Game::update()
     }
 }
 
-void Game::draw()
+auto Game::draw() -> void
 {
     drawBackground();
 
@@ -257,7 +257,7 @@ void Game::draw()
     SDLController::updateScreen();
 }
 
-void Game::drawBackground()
+auto Game::drawBackground() -> void
 {
     static bool loaded = false;
     static SDL_Texture* background;
@@ -277,7 +277,8 @@ void Game::drawBackground()
     SDLController::render(background, nullptr, &initialBackgroundDest, SDL_FLIP_NONE);
 }
 
-void Game::drawScenario(){
+auto Game::drawScenario() -> void
+{
     static bool loaded = false;
     static SDL_Texture* flowers;
     static SDL_Texture* grass;
@@ -305,7 +306,7 @@ void Game::drawScenario(){
     SDLController::render(flowers, nullptr, &flowersDest, SDL_FLIP_NONE);
 }
 
-void Game::handleEvents()
+auto Game::handleEvents() -> void
 {
     SDL_PumpEvents();
     SDL_PollEvent(&event);
@@ -388,12 +389,12 @@ void Game::handleEvents()
     }
 }
 
-void Game::addSkillToList(Skill* skill)
+auto Game::addSkillToList(Skill* skill) -> void
 {
     skillList.push_back(skill);
 }
 
-void Game::destroyUsedSkills()
+auto Game::destroyUsedSkills() -> void
 {
     for(size_t i=0; i<skillList.size(); ++i)
     {
@@ -404,13 +405,13 @@ void Game::destroyUsedSkills()
     }
 }
 
-void Game::destroySkill(const size_t& index)
+auto Game::destroySkill(const size_t& index) -> void
 {
     delete skillList[index];
     skillList.erase(skillList.begin() + index);
 }
 
-void Game::checkCollision()
+auto Game::checkCollision() -> void
 {
     for(int i=0; i<skillList.size(); ++i){
         if(skillList[i]->isOwnedByPlayer() && Collision::AABB<Entity, Skill>(boss, skillList[i])){
@@ -436,7 +437,7 @@ void Game::checkCollision()
     }
 }
 
-void Game::bossController()
+auto Game::bossController() -> void
 {
     if(boss->currentAnimation == animations::cagney::INTRO && boss->getCurrentAnimation().isLastFrame())
         boss->play(animations::cagney::IDLE);
@@ -449,11 +450,13 @@ void Game::bossController()
     }
 }
 
-void Game::subscribeEventEmitter(EventEmitter* eventEmitter){
-    EventEmitterInstances.push_back(eventEmitter);
+auto Game::subscribeEventEmitter(EventEmitter* eventEmitter) -> void
+{
+    EventEmitterInstances.emplace_back(std::move(eventEmitter));
 }
 
-void Game::pollEvents(){
+auto Game::pollEvents() -> void
+{
     for(const auto& eventEmitter : EventEmitterInstances)
         eventEmitter->pollEvents();
 
@@ -465,11 +468,13 @@ void Game::pollEvents(){
     }
 }
 
-void Game::setTimeout(const int &ms, void(*func)()){
+auto Game::setTimeout(const int &ms, void(*func)()) -> void
+{
     timeoutQueue.push_back({SDL_GetTicks(), ms, func, false});
 }
 
-void Game::restartGame(){
+auto Game::restartGame() -> void
+{
     skillList.clear();
     timeoutQueue.clear();
     boss->setHealth(GameConstants::BOSS_HEALTH);

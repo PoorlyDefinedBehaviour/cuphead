@@ -9,7 +9,7 @@
 
 Skill::~Skill(){}
 
-void Skill::draw()
+auto Skill::draw() -> void
 {
     SDL_Rect dest;
     dest.x = position.x;
@@ -20,26 +20,28 @@ void Skill::draw()
     SDLController::render(animation.requestAnimationFrame(), nullptr, &dest, flip);
 }
 
-void Skill::update()
+auto Skill::update() -> void
 {
     position = position.add(velocity);
     velocity.x = velocity.x > 0 ? velocity.x + velocityIncrementer : velocity.x - velocityIncrementer;
 }
 
-bool Skill::hasLeftScreen()
+auto Skill::hasLeftScreen() -> bool
 {
     return this->position.x < - 100;
 }
 
-bool Skill::isOwnedByPlayer(){
+auto Skill::isOwnedByPlayer() -> bool
+{
     return this->ownedByPlayer;
 }
 
-Vector2D Skill::getDimensions(){
+auto Skill::getDimensions() -> Vector2D
+{
     return this->animation.getDimensions();
 }
 
-int Skill::getDamage() const
+auto Skill::getDamage() const -> int
 {
     return damage;
 }

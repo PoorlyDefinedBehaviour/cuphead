@@ -4,7 +4,7 @@
 
 Animation::Animation(){}
 
-Animation::Animation(const std::vector<const char*>& images, const bool& blocking, const int& delay)
+Animation::Animation(const std::vector<const char*>& images, const bool blocking, const int delay)
 {
     for(const auto& image : images){
         frames.push_back(Image(image));
@@ -24,12 +24,12 @@ Animation::Animation(const std::vector<const char*>& images, const bool& blockin
     this->height = totalHeight / this->frames.size();
 }
 
-int Animation::getNumOfFrames() const
+auto Animation::getNumOfFrames() const -> size_t
 {
     return this->frames.size();
 }
 
-SDL_Texture* Animation::requestAnimationFrame()
+auto Animation::requestAnimationFrame() -> SDL_Texture*
 {
     if(timePassed >= delay){
         ++this->currentFrame;
@@ -43,7 +43,7 @@ SDL_Texture* Animation::requestAnimationFrame()
     return (this->frames[this->currentFrame]).get();
 }
 
-bool Animation::isLastFrame()
+auto Animation::isLastFrame() -> bool
 {
     ++this->ticks;
 
@@ -59,16 +59,17 @@ bool Animation::isLastFrame()
     return false;
 }
 
-bool Animation::isBlocking(){
+auto Animation::isBlocking() -> bool
+{
     return this->blocking;
 }
 
-void Animation::setDelay(const int& delay)
+auto Animation::setDelay(const int delay) -> void
 {
     this->delay = delay;
 }
 
-Vector2D Animation::getDimensions()
+auto Animation::getDimensions() -> Vector2D
 {
     return { this->width, this->height };
 }

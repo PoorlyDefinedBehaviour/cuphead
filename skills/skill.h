@@ -13,21 +13,26 @@ class Skill
 {
 public:
     virtual ~Skill();
+
     virtual void update();
     virtual void draw();
-    bool hasLeftScreen();
-    bool isOwnedByPlayer();
-    Vector2D getDimensions();
-    int getDamage() const;
+
+    auto hasLeftScreen() -> bool;
+    auto isOwnedByPlayer() -> bool;
+
+    auto getDimensions() -> Vector2D;
+    auto getDamage() const -> int;
 
     Vector2D position;
     Animation animation;
 
 protected:
     int damage = GameConstants::skills::DEFAULT_DAMAGE;
+
     Vector2D velocity;
-    bool ownedByPlayer = false;
     float velocityIncrementer = 0.03;
+
+    bool ownedByPlayer = false;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
 };
 

@@ -7,11 +7,11 @@ SDL_Renderer* SDLController::renderer;
 std::map<const std::string, Mix_Music*> SDLController::songs;
 std::map<const std::string, Mix_Chunk*> SDLController::soundEffects;
 
-void SDLController::init(const bool& fullscreen)
+auto SDLController::init(const bool fullscreen) -> void
 {
     ShowWindow(GetConsoleWindow(), SW_HIDE);
 
-    int flags = SDL_WINDOW_OPENGL;
+    Uint32 flags = SDL_WINDOW_OPENGL;
     if(fullscreen){
         flags = SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN;
     }
@@ -47,7 +47,7 @@ void SDLController::init(const bool& fullscreen)
     soundEffects.emplace(GameConstants::sounds::GAME_OVER, loadWav(GameConstants::assets::audio::GAME_OVER));
 }
 
-SDL_Texture* SDLController::loadImage(const char* file)
+auto SDLController::loadImage(const char* file) -> SDL_Texture*
 {
     SDL_Surface* tempImage = IMG_Load(file);
     SDL_Surface* optimizedImage = SDL_ConvertSurface(tempImage, tempImage->format, 0);
@@ -59,38 +59,46 @@ SDL_Texture* SDLController::loadImage(const char* file)
     return texture;
 }
 
-Mix_Music* SDLController::loadMp3(const char *file)
+auto SDLController::loadMp3(const char *file) -> Mix_Music*
 {
     return Mix_LoadMUS(file);
 }
 
-Mix_Chunk* SDLController::loadWav(const char *file)
+auto SDLController::loadWav(const char *file) -> Mix_Chunk*
 {
     return Mix_LoadWAV(file);
 }
 
-void SDLController::playAudio(const std::string& audio, const int& loops, const int& time)
+auto SDLController::playAudio(const std::string& audio, const int loops, const int time) -> void
 {
-    if(songs[audio])
-        Mix_PlayMusic(songs[audio], loops);
-    else
+    auto song = songs[audio];
+
+    if(song) {
+        Mix_PlayMusic(song, loops);
+    }
+    else {
         Mix_PlayChannelTimed(-1, soundEffects[audio], loops, time);
+    }
 }
 
-void SDLController::setVolume(const std::string audio, const int& volume)
+auto SDLController::setVolume(const std::string& audio, const int volume) -> void
 {
-    if(songs[audio])
+    auto song = songs[audio];
+
+    if(song) {
         Mix_VolumeMusic(volume);
-    else
+    }
+    else {
         Mix_VolumeChunk(soundEffects[audio], volume);
+    }
 }
 
-void SDLController::setRendererColor(const int &r, const int &g, const int &b, const int &a)
+auto SDLController::setRendererColor(const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a) -> void
 {
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
-void SDLController::render(SDL_Texture* texture, SDL_Rect* source, SDL_Rect* destination, const SDL_RendererFlip& flip)
+auto SDLController::render(SDL_Texture* texture, SDL_Rect* source, SDL_Rect* destination, const SDL_RendererFlip& flip) -> void
 {
     if(!source || source->w < 0 || source->h < 0)
     {
@@ -100,7 +108,7 @@ void SDLController::render(SDL_Texture* texture, SDL_Rect* source, SDL_Rect* des
     }
 }
 
-void SDLController::renderRectangle(const int &width, const int &height, const float &x, const float &y)
+auto SDLController::renderRectangle(const int width, const int height, const float x, const float y) -> void
 {
     SDL_Rect rectangle;
     rectangle.x = x;
@@ -111,13 +119,13 @@ void SDLController::renderRectangle(const int &width, const int &height, const f
     SDL_RenderFillRect(renderer, &rectangle);
 }
 
-void SDLController::updateScreen()
+auto SDLController::updateScreen() -> void
 {
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);
 }
 
-void SDLController::exit()
+auto SDLController::exit() -> void
 {
     Mix_CloseAudio();
     Mix_Quit();

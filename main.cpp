@@ -1,8 +1,9 @@
 #include "game.h"
+#include <memory>
 
-int main()
+auto main() -> int
 {
-    Game* game = new Game();
+    auto game = std::make_unique<Game>();
 
     game->init();
 

@@ -9,14 +9,20 @@ class Animation
 {
 public:
     Animation();
-    Animation(const std::vector<const char*>& images, const bool& blocking = false, const int& delay = 3);
 
-    int getNumOfFrames() const;
-    SDL_Texture* requestAnimationFrame();
-    bool isLastFrame();
-    bool isBlocking();
-    void setDelay(const int& delay);
-    Vector2D getDimensions();
+    Animation(const std::vector<const char*>& images, const bool blocking = false, const int delay = 3);
+
+    auto getNumOfFrames() const -> size_t;
+
+    auto requestAnimationFrame() ->  SDL_Texture*;
+
+    auto isLastFrame() -> bool;
+    auto isBlocking() -> bool;
+
+    auto setDelay(const int delay) -> void;
+
+    auto getDimensions() -> Vector2D;
+
     int currentFrame = 0;
 
 private:

@@ -24,19 +24,22 @@ public:
     std::string currentAnimation = "idle";
     std::string currentSkill = "ray";
 
-    void draw();
-    void flipAnimation(const bool& shouldFlip);
-    bool isAnimationFlipped() const;
-    void play(const std::string& animatioName, const bool& force = false);
-    void move(const std::string& direction);
-    void update();
-    bool isOnGround();
-    Vector2D getDimensions();
-    void receiveDamage(const int& amount);
-    void setHealth(const int& amount);
-    int getHealth();
-    Animation& getCurrentAnimation();
-    bool isDead();
+    auto draw() -> void;
+    auto flipAnimation(const bool shouldFlip) -> void;
+    auto play(const std::string& animatioName, const bool force = false) -> void;
+    auto move(const std::string& direction) -> void;
+    auto receiveDamage(const int amount) -> void;
+
+    auto update() -> void;
+    auto isOnGround() -> bool;
+    auto isAnimationFlipped() const -> bool;
+    auto isDead() -> bool;
+
+    auto setHealth(const int amount) -> void;
+    auto getHealth() -> int;
+    auto getDimensions() -> Vector2D;
+    auto getCurrentAnimation() -> Animation&;
+
 
 private:
     int health = 3;

@@ -5,5 +5,5 @@ class Boomerang : public Skill
 {
 public:
     Boomerang(Entity* entity);
-    void update();
+    auto update() -> void;
 };
