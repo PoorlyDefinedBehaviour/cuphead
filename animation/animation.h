@@ -14,14 +14,14 @@ public:
 
     auto getNumOfFrames() const -> size_t;
 
-    auto requestAnimationFrame() ->  SDL_Texture*;
+    auto requestAnimationFrame() -> SDL_Texture*;
 
     auto isLastFrame() -> bool;
-    auto isBlocking() -> bool;
+    auto isBlocking() const -> bool;
 
     auto setDelay(const int delay) -> void;
 
-    auto getDimensions() -> Vector2D;
+    auto getDimensions() const -> Vector2D;
 
     size_t currentFrame = 0;
 

@@ -103,7 +103,7 @@ auto Entity::receiveDamage(const int amount) -> void
     }
 }
 
-auto Entity::isDead() -> bool
+auto Entity::isDead() const -> bool
 {
     return this->health <= 0;
 }
@@ -113,7 +113,7 @@ auto Entity::setHealth(const int amount) -> void
     this->health = amount;
 }
 
-auto Entity::getHealth() -> int
+auto Entity::getHealth() const -> int
 {
     return this->health;
 }

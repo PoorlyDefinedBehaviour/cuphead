@@ -405,6 +405,7 @@ auto Game::destroyUsedSkills() -> void
 
 auto Game::destroySkill(const size_t& index) -> void
 {
+    delete skillList[index];
     skillList.erase(skillList.begin() + index);
 }
 

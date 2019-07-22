@@ -1,0 +1,14 @@
+release/main.o
+release/entity.o
+release/vector2d.o
+release/animation.o
+release/game.o
+release/skill.o
+release/image.o
+release/ray.o
+release/boomerang.o
+release/seedmissile.o
+release/pollen.o
+release/venus.o
+release/eventemitter.o
+release/sdlcontroller.o

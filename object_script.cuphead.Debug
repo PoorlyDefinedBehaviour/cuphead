@@ -1,0 +1,14 @@
+debug/main.o
+debug/entity.o
+debug/vector2d.o
+debug/animation.o
+debug/game.o
+debug/skill.o
+debug/image.o
+debug/ray.o
+debug/boomerang.o
+debug/seedmissile.o
+debug/pollen.o
+debug/venus.o
+debug/eventemitter.o
+debug/sdlcontroller.o

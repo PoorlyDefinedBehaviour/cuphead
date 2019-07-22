@@ -33,10 +33,10 @@ public:
     auto update() -> void;
     auto isOnGround() -> bool;
     auto isAnimationFlipped() const -> bool;
-    auto isDead() -> bool;
+    auto isDead() const -> bool;
 
     auto setHealth(const int amount) -> void;
-    auto getHealth() -> int;
+    auto getHealth() const -> int;
     auto getDimensions() -> Vector2D;
     auto getCurrentAnimation() -> Animation&;
 

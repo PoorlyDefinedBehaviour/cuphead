@@ -58,7 +58,7 @@ auto Animation::isLastFrame() -> bool
     return false;
 }
 
-auto Animation::isBlocking() -> bool
+auto Animation::isBlocking() const -> bool
 {
     return this->blocking;
 }
@@ -68,7 +68,7 @@ auto Animation::setDelay(const int delay) -> void
     this->delay = delay;
 }
 
-auto Animation::getDimensions() -> Vector2D
+auto Animation::getDimensions() const -> Vector2D
 {
     return { this->width, this->height };
 }
