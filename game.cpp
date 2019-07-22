@@ -14,8 +14,8 @@
 #include <SDL2/SDL_image.h>
 #include <ctime>
 
-Entity* Game::player;
-Entity* Game::boss;
+std::unique_ptr<Entity> Game::player;
+std::unique_ptr<Entity> Game::boss;
 std::vector<TimeoutObject> Game::timeoutQueue;
 std::vector<EventEmitter*> Game::EventEmitterInstances;
 SDL_Event Game::event;
@@ -23,6 +23,8 @@ std::vector<Skill*> Game::skillList;
 
 auto Game::init() -> void
 {
+    std::srand(std::time(nullptr));
+
     SDLController::init(false);
     SDLController::playAudio(GameConstants::sounds::MAIN_THEME, -1);
     SDLController::setVolume(GameConstants::sounds::MAIN_THEME, 30);
@@ -31,11 +33,9 @@ auto Game::init() -> void
     this->LIFE_DARK = SDLController::loadImage(GameConstants::assets::images::LIFE_DARK);
     this->LIFE_FILLED = SDLController::loadImage(GameConstants::assets::images::LIFE_FILLED);
 
-    srand(time(nullptr));
+    player = std::make_unique<Entity>(100, 0);
 
-    player = new Entity(100, 0);
     player->setHealth(GameConstants::PLAYER_HEALTH);
-
     player->animations.emplace(animations::cuphead::PULLING_PANTS, Animation(animations::cuphead::PULLING_PANTS_ANIMATION_FRAMES));
     player->animations.emplace(animations::cuphead::IDLE, Animation(animations::cuphead::IDLE_ANIMATION_FRAMES, false, 5));
     player->animations.emplace(animations::cuphead::RUN, Animation(animations::cuphead::RUN_ANIMATION_FRAMES));
@@ -45,8 +45,9 @@ auto Game::init() -> void
     player->animations.emplace(animations::cuphead::DEATH, Animation(animations::cuphead::DEATH_ANIMATION_FRAMES, true));
 
 
-    boss = new Entity(GameConstants::window::WINDOW_WIDTH - 400, GameConstants::window::WINDOW_HEIGHT - 636);
+    boss =  std::make_unique<Entity>(GameConstants::window::WINDOW_WIDTH - 400, GameConstants::window::WINDOW_HEIGHT - 636);
 
+    boss->setHealth(GameConstants::BOSS_HEALTH);
     boss->animations.emplace(animations::cagney::INTRO, Animation(animations::cagney::INTRO_ANIMATION_FRAMES));
     boss->animations.emplace(animations::cagney::IDLE, Animation(animations::cagney::IDLE_ANIMATION_FRAMES));
     boss->animations.emplace(animations::cagney::DEATH, Animation(animations::cagney::DEATH_ANIMATION_FRAMES));
@@ -54,21 +55,18 @@ auto Game::init() -> void
     boss->animations.emplace(animations::cagney::FIRING_SEEDS, Animation(animations::cagney::FIRING_SEEDS_ANIMATION_FRAMES));
     boss->animations.emplace(animations::projectiles::BLUE_MISSILE_SEED_LAUNCH, Animation(animations::projectiles::BLUE_MISSILE_SEED_LAUNCH_ANIMATION_FRAMES));
 
-    boss->setHealth(GameConstants::BOSS_HEALTH);
 
     boss->addEventListener("attack_over", []() -> void {
                                auto getRandomAnimation = []() -> std::string {
 
-                                   int skillToUse = rand() % 2;
+                                   const int skillToUse = rand() % 2;
 
                                    if(skillToUse == 0){
-                                       addSkillToList(new Venus(player));
+                                       addSkillToList(new Venus(&*player));
+                                       return animations::cagney::CREATE_OBJECT;
                                    }
 
-                                   switch(skillToUse){
-                                       case 0: return animations::cagney::CREATE_OBJECT;
-                                       case 1: return animations::cagney::FIRING_SEEDS;
-                                   }
+                                   return animations::cagney::FIRING_SEEDS;
                                };
 
                                auto createSkillForAnimation = [](const std::string& animation) -> void {
@@ -82,11 +80,11 @@ auto Game::init() -> void
                                        int randomSkill = rand() % 2;
                                        if(randomSkill == 0){
                                            setTimeout(1000, []() -> void {
-                                               addSkillToList(new Pollen(boss));
+                                               addSkillToList(new Pollen(&*boss));
                                            });
                                        } else {
                                            setTimeout(1000, []() -> void {
-                                               addSkillToList(new Boomerang(boss));
+                                               addSkillToList(new Boomerang(&*boss));
                                            });
                                        }
                                    }
@@ -105,7 +103,7 @@ auto Game::run() -> void
     const int frameDelay = 1000 / FPS;
 
     Uint32 frameStart;
-    int frameTime;
+    Uint32 frameTime;
 
     SDL_Texture* landingImage = nullptr;
     int landing = rand() % 2;
@@ -321,7 +319,7 @@ auto Game::handleEvents() -> void
             if(delay <= 0){
                 SDLController::playAudio(GameConstants::sounds::cuphead::CUPHEAD_ATTACK, 0, 100);
                 SDLController::setVolume(GameConstants::sounds::cuphead::CUPHEAD_ATTACK, 30);
-                addSkillToList(new Ray(player));
+                addSkillToList(new Ray(&*player));
                 delay += 10;
             }
             --delay;
@@ -350,30 +348,30 @@ auto Game::handleEvents() -> void
             player->play(animations::cuphead::PULLING_PANTS);
         }
 
-        if(keysArray[SDL_SCANCODE_D] && keysArray[SDL_SCANCODE_SPACE]){
+        if(keysArray[SDL_SCANCODE_D] and keysArray[SDL_SCANCODE_SPACE]){
             player->play(animations::cuphead::RUN_ATTACK);
             static int delay = 0;
             if(delay <= 0){
-                addSkillToList(new Ray(player));
+                addSkillToList(new Ray(&*player));
                 delay += 10;
             }
             --delay;
         }
 
-        if(keysArray[SDL_SCANCODE_A] && keysArray[SDL_SCANCODE_SPACE]){
+        if(keysArray[SDL_SCANCODE_A] and keysArray[SDL_SCANCODE_SPACE]){
             player->play(animations::cuphead::RUN_ATTACK);
             player->flipAnimation(true);
             static int delay = 0;
             if(delay <= 0){
-                addSkillToList(new Ray(player));
+                addSkillToList(new Ray(&*player));
                 delay += 10;
             }
             --delay;
         }
 
-        if(!keysArray[SDL_SCANCODE_W] && !keysArray[SDL_SCANCODE_A] &&
-                !keysArray[SDL_SCANCODE_D] &&
-                !keysArray[SDL_SCANCODE_SPACE] && !keysArray[SDL_SCANCODE_F1] &&
+        if(!keysArray[SDL_SCANCODE_W] and !keysArray[SDL_SCANCODE_A] and
+                !keysArray[SDL_SCANCODE_D] and
+                !keysArray[SDL_SCANCODE_SPACE] and !keysArray[SDL_SCANCODE_F1] and
                 !keysArray[SDL_SCANCODE_F2])
         {
             player->play(animations::cuphead::IDLE);
@@ -383,7 +381,7 @@ auto Game::handleEvents() -> void
             player->play(animations::cuphead::JUMP);
     }
 
-    if(event.type == SDL_QUIT || keysArray[SDL_SCANCODE_ESCAPE])
+    if(event.type == SDL_QUIT or keysArray[SDL_SCANCODE_ESCAPE])
     {
         SDLController::exit();
     }
@@ -391,7 +389,7 @@ auto Game::handleEvents() -> void
 
 auto Game::addSkillToList(Skill* skill) -> void
 {
-    skillList.push_back(skill);
+    skillList.emplace_back(std::move(skill));
 }
 
 auto Game::destroyUsedSkills() -> void
@@ -407,30 +405,29 @@ auto Game::destroyUsedSkills() -> void
 
 auto Game::destroySkill(const size_t& index) -> void
 {
-    delete skillList[index];
     skillList.erase(skillList.begin() + index);
 }
 
 auto Game::checkCollision() -> void
 {
-    for(int i=0; i<skillList.size(); ++i){
-        if(skillList[i]->isOwnedByPlayer() && Collision::AABB<Entity, Skill>(boss, skillList[i])){
+    for(size_t i=0; i<skillList.size(); ++i){
+        if(skillList[i]->isOwnedByPlayer() && Collision::AABB(&*boss, &*skillList[i])){
             boss->receiveDamage(skillList[i]->getDamage());
             destroySkill(i);
         }
-        else if(!skillList[i]->isOwnedByPlayer() && Collision::AABB<Entity, Skill>(player, skillList[i])){
+        else if(!skillList[i]->isOwnedByPlayer() && Collision::AABB(&*player, &*skillList[i])){
             player->receiveDamage(skillList[i]->getDamage());
             destroySkill(i);
         }
     }
 
-    if(Collision::AABB<Entity, Entity>(player, boss)){
+    if(Collision::AABB(&*player, &*boss)){
         player->receiveDamage(1);
     }
 
-    for(int i=0; i<skillList.size(); ++i){
-        for(int j=0; j<skillList.size(); ++j){
-            if(skillList[i]->isOwnedByPlayer() && !skillList[j]->isOwnedByPlayer() && Collision::AABB(skillList[i], skillList[j])){
+    for(size_t i=0; i<skillList.size(); ++i){
+        for(size_t j=0; j<skillList.size(); ++j){
+            if(skillList[i]->isOwnedByPlayer() && !skillList[j]->isOwnedByPlayer() && Collision::AABB(&*skillList[i], &*skillList[j])){
                 destroySkill(j);
             }
         }
@@ -442,12 +439,11 @@ auto Game::bossController() -> void
     if(boss->currentAnimation == animations::cagney::INTRO && boss->getCurrentAnimation().isLastFrame())
         boss->play(animations::cagney::IDLE);
 
-    if(boss->isDead()){
+    if(boss->isDead())
         boss->play(animations::cagney::DEATH);
-    } else {
+    else
         if(boss->getCurrentAnimation().isLastFrame())
             boss->emit("attack_over");
-    }
 }
 
 auto Game::subscribeEventEmitter(EventEmitter* eventEmitter) -> void
@@ -457,18 +453,19 @@ auto Game::subscribeEventEmitter(EventEmitter* eventEmitter) -> void
 
 auto Game::pollEvents() -> void
 {
-    for(const auto& eventEmitter : EventEmitterInstances)
+    for(const auto& eventEmitter : EventEmitterInstances) {
         eventEmitter->pollEvents();
+    }
 
-    for(int i=0; i<timeoutQueue.size(); ++i){
-        if(!timeoutQueue[i].done && SDL_GetTicks() - timeoutQueue[i].startTime > timeoutQueue[i].ms){
-            timeoutQueue[i].func();
-            timeoutQueue[i].done = true;
+    for(auto& timeout : timeoutQueue){
+        if(!timeout.done and SDL_GetTicks() - timeout.startTime > timeout.ms){
+            timeout.func();
+            timeout.done = true;
         }
     }
 }
 
-auto Game::setTimeout(const int &ms, void(*func)()) -> void
+auto Game::setTimeout(const unsigned int ms, void(*func)()) -> void
 {
     timeoutQueue.push_back({SDL_GetTicks(), ms, func, false});
 }

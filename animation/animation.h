@@ -23,14 +23,16 @@ public:
 
     auto getDimensions() -> Vector2D;
 
-    int currentFrame = 0;
+    size_t currentFrame = 0;
 
 private:
     int timePassed = 0;
     int ticks = 0;
+
     int width;
     int height;
     int delay;
+
     std::vector<Image> frames;
     bool blocking;
 };

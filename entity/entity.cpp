@@ -38,10 +38,9 @@ void Entity::play(const std::string &animationName, const bool force)
 {
     Animation* animation = &animations[currentAnimation];
 
-    if (!animation->isBlocking() || animation->isLastFrame() || force){
-        if(force){
-            animations[animationName].currentFrame = 0;
-        }
+    if (!animation->isBlocking() or animation->isLastFrame() or force){
+        if(force) animations[animationName].currentFrame = 0;
+
         currentAnimation = animationName;
     }
 }
@@ -53,12 +52,8 @@ auto Entity::update() -> void
 
 auto Entity::flipAnimation(const bool shouldFlip) -> void
 {
-    if(shouldFlip){
-        flip = SDL_FLIP_HORIZONTAL;
-    }
-    else {
-        flip = SDL_FLIP_NONE;
-    }
+    if(shouldFlip) flip = SDL_FLIP_HORIZONTAL;
+    else flip = SDL_FLIP_NONE;
 }
 
 auto Entity::isAnimationFlipped() const -> bool

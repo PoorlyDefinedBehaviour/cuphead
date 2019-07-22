@@ -31,12 +31,11 @@ auto Animation::getNumOfFrames() const -> size_t
 
 auto Animation::requestAnimationFrame() -> SDL_Texture*
 {
-    if(timePassed >= delay){
+    if(++timePassed >= delay){
         ++this->currentFrame;
         timePassed = 0;
     }
 
-    ++timePassed;
     if(this->currentFrame >= this->getNumOfFrames())
         this->currentFrame = 0;
 

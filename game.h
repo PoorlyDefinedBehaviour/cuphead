@@ -15,7 +15,7 @@ class Vector2D;
 
 struct TimeoutObject{
     const Uint32 startTime;
-    int ms;
+    unsigned int ms;
     void(*func)();
     bool done;
 };
@@ -45,10 +45,10 @@ private:
     auto destroyUsedSkills() -> void;
     auto destroySkill(const size_t& index) -> void;
 
-    static auto setTimeout(const int& ms, void(*func)()) -> void;
+    static auto setTimeout(const unsigned int ms, void(*func)()) -> void;
 
-    static Entity* player;
-    static Entity* boss;
+    static std::unique_ptr<Entity> player;
+    static std::unique_ptr<Entity> boss;
 
     static std::vector<Skill*> skillList;
     static std::vector<TimeoutObject> timeoutQueue;
