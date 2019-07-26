@@ -28,21 +28,9 @@ void Venus::update(){
     this->velocity = {this->target->position.x - this->position.x, this->target->position.y - this->position.y};
     this->velocity = {this->velocity.x * 0.01, this->velocity.y * 0.01};
 
-    if(this->velocity.x < 0){
-        if(this->velocity.x < -0.01){
-            this->velocity.x += -0.01;
-        }
-    }
-    else if(this->velocity.x > 0){
-        if(this->velocity.x < 0.01){
-            this->velocity.x += 0.01;
-        }
-    }
+    this->velocity.x += this.velocity > 0 ? 0.01 : -0.01;
 
-    if(this->velocity.x > 0){
-        this->flip = SDL_FLIP_HORIZONTAL;
-    } else {
-        this->flip = SDL_FLIP_NONE;
-    }
+    this->flip = this->velocity.x > 0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    
     this->position = this->position.add(this->velocity);
 }
